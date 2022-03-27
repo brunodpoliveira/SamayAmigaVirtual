@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("content-type", "application/json");
                 conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "7956072f06msheafb2efb88795b3p10d73ajsn4d99f9a6472b");
+                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY_HERE");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("content-type", "application/json");
                 conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "7956072f06msheafb2efb88795b3p10d73ajsn4d99f9a6472b");
+                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY_HERE");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
