@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("content-type", "application/json");
                 conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY_HERE");
+                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     public void blenderbotSendPost(String message) {
         Thread thread = new Thread(() -> {
             try {
-                URL url = new URL("https://hf.space/gradioiframe/Ideon/SamayMVP/+/api/predict/");
+                URL url = new URL("https://hf.space/embed/Ideon/Samay/+/api/predict/");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("content-type", "application/json");
                 conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY_HERE");
+                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
