@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.internaltest.sarahchatbotmvp.adapters.ChatAdapter;
@@ -25,8 +24,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.text.Normalizer;
-import java.util.regex.Pattern;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView chatView;
@@ -108,37 +111,27 @@ public class MainActivity extends AppCompatActivity {
     private void translateUserMsgToEnglish(String messagePTBR){
         Thread thread = new Thread(() -> {
             try{
-                URL url = new URL("https://lecto-translation.p.rapidapi.com/v1/translate/json");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("content-type", "application/json");
-                conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                // "{\"to\":[\"en\"],\"from\":\"pt-br\",\"json\":\"{\\\"\\\":\\\"Olá\\\"}\"}"
-                String body ="{\"to\":[\"en\"],\"from\":\"pt-br\",\"json\":\"{\\\"\\\":\\\""+messagePTBR+"\\\"}\"}";
+                OkHttpClient client = new OkHttpClient();
 
-                //removendo acentos da mensagem, pois a api parece não ler mensagens com acentos corretamente
+                MediaType mediaType = MediaType.parse("application/json");
+                String value = ("{\"text\": \""+messagePTBR+"\", \"tl\": \"en\"}");
+                RequestBody body = RequestBody.create(mediaType, value);
+                Request request = new Request.Builder()
+                        .url("https://google-translate54.p.rapidapi.com/translate")
+                        .post(body)
+                        .addHeader("content-type", "application/json")
+                        .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
+                        .addHeader("X-RapidAPI-Key", "INSERT_API_KEY")
+                        .build();
 
-                String nfdNormalizedString = Normalizer.normalize(body, Normalizer.Form.NFD);
-                Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-                String normalizedString = pattern.matcher(nfdNormalizedString).replaceAll("");
-                Log.i("normalizedString", normalizedString);
-                os.writeBytes(normalizedString);
-                os.flush();
-                os.close();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                JsonObject finalMessageObj = JsonParser.parseReader(reader).getAsJsonObject();
-                Log.i("finalMessageObjEN", finalMessageObj.toString());
-
-                //I/finalMessageObjEN: {"translations":[{"to":"en","translated":["{\"0\":\"Hey.\"}"]}],"from":"pt-br","protected_keys":[],"translated_characters":9}
-                JsonElement finalMessageEN = finalMessageObj.getAsJsonArray("translations");
-                Log.i("finalMessageEN", finalMessageEN.toString());
-                blenderbotSendPost(finalMessageEN.toString());
-                conn.disconnect();
+                Response response = client.newCall(request).execute();
+                String original = Objects.requireNonNull(response.body()).string();
+                Log.i("original", original);
+                //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
+                String cleanFinalMessage = original.replace("\"code\":200,\"texts\":","");
+                String cleanFinalMessage2 = cleanFinalMessage.replace(",\"tl\":\"en\"","");
+                Log.i("finalMessagePTBR", cleanFinalMessage2);
+                blenderbotSendPost(cleanFinalMessage2);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -186,8 +179,12 @@ public class MainActivity extends AppCompatActivity {
                 JsonObject botObj = JsonParser.parseReader(reader).getAsJsonObject();
 
                 String botMessage = botObj.get("data").getAsString();
-                translateMachinePostToPortugueseAndSendMsgToUser(botMessage);
-                Log.i("botMessage", botMessage);
+                //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
+                String cleanFinalMessage = botMessage.replace("<s>","");
+                String cleanFinalMessage2 = cleanFinalMessage.replace("</s>","");
+
+                translateMachinePostToPortugueseAndSendMsgToUser(cleanFinalMessage2);
+                Log.i("botMessage", cleanFinalMessage2);
 
                 conn.disconnect();
             } catch (Exception e) {
@@ -200,33 +197,37 @@ public class MainActivity extends AppCompatActivity {
     private void translateMachinePostToPortugueseAndSendMsgToUser(String messageEN){
         Thread thread = new Thread(() -> {
             try{
-                URL url = new URL("https://lecto-translation.p.rapidapi.com/v1/translate/json");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("content-type", "application/json");
-                conn.setRequestProperty("X-RapidAPI-Host", "lecto-translation.p.rapidapi.com");
-                conn.setRequestProperty("X-RapidAPI-Key", "INSERT_API_KEY");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
+                OkHttpClient client = new OkHttpClient();
 
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                String body = "{\"to\":[\"pt-br\"],\"from\":\"en\",\"json\":\"{\\\"\\\":\\\""+messageEN+"\\\"}\"}";
-                os.writeBytes(body);
-                os.flush();
-                os.close();
+                MediaType mediaType = MediaType.parse("application/json");
+                String value = ("{\"text\": \""+messageEN+"\", \"tl\": \"pt\"}");
+                RequestBody body = RequestBody.create(mediaType, value);
+                Request request = new Request.Builder()
+                        .url("https://google-translate54.p.rapidapi.com/translate")
+                        .post(body)
+                        .addHeader("content-type", "application/json")
+                        .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
+                        .addHeader("X-RapidAPI-Key", "INSERT_API_KEY")
+                        .build();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                JsonObject finalMessageObj = JsonParser.parseReader(reader).getAsJsonObject();
-                JsonElement finalMessagePTBR = finalMessageObj.getAsJsonArray("translations");
-                String original = finalMessagePTBR.toString();
+                Response response = client.newCall(request).execute();
+                Log.i("response", response.toString());
+                String original = Objects.requireNonNull(response.body()).string();
+                Log.i("original", original);
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para o usuário
+                String cleanFinalMessage = original.replace("{\"code\":200,\"texts\":\"","");
+                String cleanFinalMessage2 = cleanFinalMessage.replace("\",\"tl\":\"pt\"}","");
+                //adicionando espaçamento depois dos sinais de pontuação da resposta
+                String cleanFinalMessage3 = cleanFinalMessage2.replace(".",". ");
+                String cleanFinalMessage4 = cleanFinalMessage3.replace("!","! ");
+                String cleanFinalMessage5 = cleanFinalMessage4.replace("?","? ");
+                String cleanFinalMessage6 = cleanFinalMessage5.replace(",",", ");
 
-                String cleanFinalMessage = original.replace("[{\"to\":\"pt-br\",\"translated\":[\"{\\\"0\\\":\\\"<s>","");
-                String cleanFinalMessage2 = cleanFinalMessage.replace("</s>\\\"}\"]}]","");
-                Log.i("finalMessagePTBR", cleanFinalMessage2);
-                if (!cleanFinalMessage2.isEmpty()){
+                Log.i("finalMessagePTBR", cleanFinalMessage6);
+
+                if (!cleanFinalMessage6.isEmpty()){
                     runOnUiThread(() -> {
-                        messageList.add(new Message(cleanFinalMessage2, true));
+                        messageList.add(new Message(cleanFinalMessage6, true));
                         chatAdapter.notifyDataSetChanged();
                         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
                     });
@@ -235,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "algo deu errado", Toast.LENGTH_SHORT).show();
                 }
 
-                conn.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
             }
