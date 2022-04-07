@@ -112,12 +112,16 @@ public class MainActivity extends AppCompatActivity {
         Thread thread = new Thread(() -> {
             try{
                 OkHttpClient client = new OkHttpClient();
+                /*
+                String value = "{\"texts\": [\"hello. world!\"],\"tls\": [\"pt\"]}";
+                \""+messagePTBR+"\"
+                 */
 
                 MediaType mediaType = MediaType.parse("application/json");
-                String value = ("{\"text\": \""+messagePTBR+"\", \"tl\": \"en\"}");
+                String value = "{\"texts\": [\""+messagePTBR+"\"],\"tls\": [\"en\"]}";
                 RequestBody body = RequestBody.create(mediaType, value);
                 Request request = new Request.Builder()
-                        .url("https://google-translate54.p.rapidapi.com/translate")
+                        .url("https://google-translate54.p.rapidapi.com/translates")
                         .post(body)
                         .addHeader("content-type", "application/json")
                         .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
@@ -200,10 +204,10 @@ public class MainActivity extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient();
 
                 MediaType mediaType = MediaType.parse("application/json");
-                String value = ("{\"text\": \""+messageEN+"\", \"tl\": \"pt\"}");
+                String value = "{\"texts\": [\""+messageEN+"\"],\"tls\": [\"pt\"]}";
                 RequestBody body = RequestBody.create(mediaType, value);
                 Request request = new Request.Builder()
-                        .url("https://google-translate54.p.rapidapi.com/translate")
+                        .url("https://google-translate54.p.rapidapi.com/translates")
                         .post(body)
                         .addHeader("content-type", "application/json")
                         .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
@@ -215,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
                 String original = Objects.requireNonNull(response.body()).string();
                 Log.i("original", original);
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para o usuário
-                String cleanFinalMessage = original.replace("{\"code\":200,\"texts\":\"","");
-                String cleanFinalMessage2 = cleanFinalMessage.replace("\",\"tl\":\"pt\"}","");
+                String cleanFinalMessage = original.replace("[{\"code\":200,\"texts\":\"","");
+                String cleanFinalMessage2 = cleanFinalMessage.replace("\",\"tl\":\"pt\"}]","");
                 //adicionando espaçamento depois dos sinais de pontuação da resposta
                 String cleanFinalMessage3 = cleanFinalMessage2.replace(".",". ");
                 String cleanFinalMessage4 = cleanFinalMessage3.replace("!","! ");
