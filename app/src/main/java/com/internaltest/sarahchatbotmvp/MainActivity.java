@@ -1,5 +1,6 @@
 package com.internaltest.sarahchatbotmvp;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editMessage;
     ImageButton btnSend;
     FloatingActionButton info;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 messageList.add(new Message(message, false));
                 editMessage.setText("");
                 startMessageLoop(message);
+                //mensagem de carregamento
+                progressDialog = new ProgressDialog(MainActivity.this);
+                progressDialog.setTitle("Carregando mensagem");
+                progressDialog.setMessage("Aguarde...");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.show();
+                progressDialog.setCancelable(false);
                 Objects.requireNonNull(chatView.getAdapter()).notifyDataSetChanged();
                 Objects.requireNonNull(chatView.getLayoutManager())
                         .scrollToPosition(messageList.size() - 1);
@@ -113,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             try{
                 OkHttpClient client = new OkHttpClient();
                 /*
+                modelo de resposta
                 String value = "{\"texts\": [\"hello. world!\"],\"tls\": [\"pt\"]}";
                 \""+messagePTBR+"\"
                  */
@@ -134,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
                 String cleanFinalMessage = original.replace("\"code\":200,\"texts\":","");
                 String cleanFinalMessage2 = cleanFinalMessage.replace(",\"tl\":\"en\"","");
-                Log.i("finalMessagePTBR", cleanFinalMessage2);
+                Log.i("cleanFinalMessage2", cleanFinalMessage2);
                 blenderbotSendPost(cleanFinalMessage2);
             }
             catch (Exception e) {
@@ -218,28 +228,46 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("response", response.toString());
                 String original = Objects.requireNonNull(response.body()).string();
                 Log.i("original", original);
+
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para o usuário
-                String cleanFinalMessage = original.replace("[{\"code\":200,\"texts\":\"","");
-                String cleanFinalMessage2 = cleanFinalMessage.replace("\",\"tl\":\"pt\"}]","");
-                //adicionando espaçamento depois dos sinais de pontuação da resposta
-                String cleanFinalMessage3 = cleanFinalMessage2.replace(".",". ");
-                String cleanFinalMessage4 = cleanFinalMessage3.replace("!","! ");
-                String cleanFinalMessage5 = cleanFinalMessage4.replace("?","? ");
-                String cleanFinalMessage6 = cleanFinalMessage5.replace(",",", ");
-
-                Log.i("finalMessagePTBR", cleanFinalMessage6);
-
-                if (!cleanFinalMessage6.isEmpty()){
+                String cleanFinalMessage = original.replace("[{\"code\":200,\"texts\":\"","")
+                        .replace("\",\"tl\":\"pt\"}]","")
+                        //adicionando espaçamento depois dos sinais de pontuação da resposta
+                        .replace(".",". ")
+                        .replace("!","! ")
+                        .replace("?","? ")
+                        .replace(",",", ")
+                        //tirando aspas, pois quebram as mensagems
+                        .replace("\"\"",", ");
+                //limpando mensagens em inglês que aparecem quando ela tem apostrofos
+                if (original.contains("<i>")){
+                    String startTag = "<i>";
+                    String endTag = "</i>";
+                    //removendo texto entre as tags
+                    String textToRemove = cleanFinalMessage.substring(cleanFinalMessage.indexOf(startTag) + startTag.length(), cleanFinalMessage.indexOf(endTag));
+                    String cleanFinalMessage2 = cleanFinalMessage.replaceAll(textToRemove, "");
+                    String cleanFinalMessage3 = cleanFinalMessage2.replaceAll(startTag, "").replaceAll(endTag, "");
+                    Log.i("finalMessagePTBR - c/ <i>", cleanFinalMessage3);
                     runOnUiThread(() -> {
-                        messageList.add(new Message(cleanFinalMessage6, true));
+                        progressDialog.dismiss();
+                        messageList.add(new Message(cleanFinalMessage3, true));
                         chatAdapter.notifyDataSetChanged();
                         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
                     });
+                }else{
+                    Log.i("finalMessagePTBR s/ <i>", cleanFinalMessage);
+                    if (!cleanFinalMessage.isEmpty()){
+                        runOnUiThread(() -> {
+                            progressDialog.dismiss();
+                            messageList.add(new Message(cleanFinalMessage, true));
+                            chatAdapter.notifyDataSetChanged();
+                            Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
+                        });
 
-                }else {
-                    Toast.makeText(this, "algo deu errado", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(this, "algo deu errado", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
