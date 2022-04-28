@@ -56,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
             ad.setIcon(R.mipmap.ic_launcher_round);
             ad.setTitle("Avisos:");
             ad.setMessage("APERTE O BOTÃO VOLTAR NO SEU CELULAR PARA SAIR DESSA TELA\n" +
+                    "AVISO: ESSE APP AINDA ESTÁ EM FASE DE TESTES.\n " +
+                    "Favor relatar quaisquer problemas para:\n teqbot.io59@gmail.com\n " +
                     "Aviso de Privacidade\n: Esse app coleta as respostas digitadas pelos " +
                     "usuários durante suas conversas para melhorar a precisão das respostas " +
                     "do aplicativo, mesmo quando o app está fechado ou não está ativamente em uso " +
                     "por você.\n Ao fechar esse aviso, você indica que consente com esses termos.\n" +
                     "Caso não concorde, feche o aplicativo agora.\n" +
-                    "AVISO: ESSE APP AINDA ESTÁ EM FASE DE TESTES.\n " +
-                    "Favor relatar quaisquer problemas para:\n teqbot.io59@gmail.com\n " +
                     "AVISO: Em raras ocasiões, as frases ditas pelo app podem ter cunho ofensivo,violento," +
                     "racista, homofóbico, etc.\n Estamos trabalhando duro para criar um ambiente " +
                     "agrádavel e inclusivo para todos os nosso usuários.\n" +
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 messageList.add(new Message(message, false));
                 editMessage.setText("");
                 startMessageLoop(message);
-                //mensagem de carregamento
+                //mensagem de carregamento, que aparecerá qndo o user mandar msg
                 progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setTitle("Carregando mensagem");
                 progressDialog.setMessage("Aguarde...");
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
     /*
     Como funciona o loop de mensagens:
-    O usuário digita uma mensagem --> ela é traduzida para o inglês --> o blenderbor lê a msg traduzida
+    O usuário digita uma mensagem --> ela é traduzida para o inglês --> o blenderbot lê a msg traduzida
     --> a resposta do blenderbot é traduzida de volta para o ptbr--> a msg traduzida é enfim mostrada
     para o user
     * */
@@ -142,10 +142,17 @@ public class MainActivity extends AppCompatActivity {
                 String original = Objects.requireNonNull(response.body()).string();
                 Log.i("original", original);
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
-                String cleanFinalMessage = original.replace("\"code\":200,\"texts\":","");
-                String cleanFinalMessage2 = cleanFinalMessage.replace(",\"tl\":\"en\"","");
-                Log.i("cleanFinalMessage2", cleanFinalMessage2);
-                blenderbotSendPost(cleanFinalMessage2);
+                //se eles ficarem na msg, pode causar erros
+                String cleanFinalMessage = original.replace("\"code\":200,\"texts\":","")
+                        .replace(",\"tl\":\"en\"","")
+                        //tirando aspas, pois quebram as mensagems
+                        .replaceAll("\"","");
+                //nessa parte abaixo ele deixa somente letras, números, sinais
+                //de pontuação passarem, tirando caracteres especiais como emojis
+                String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
+                String emojiless = cleanFinalMessage.replaceAll(characterFilter,"");
+                Log.i("cleanFinalMessage", emojiless);
+                blenderbotSendPost(emojiless);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -187,20 +194,30 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("status response message", String.valueOf(conn.getResponseCode()));
                 Log.i("Message response" , conn.getResponseMessage());
+                //se o servidor respondeu como deveria, vai passar para a próxima etapa;
+                // se não, ele vai parar aqui com um erro e o mostra para o usuário
+                if (String.valueOf(conn.getResponseCode()).equals("200")){
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    JsonObject botObj = JsonParser.parseReader(reader).getAsJsonObject();
 
-                JsonObject botObj = JsonParser.parseReader(reader).getAsJsonObject();
+                    String botMessage = botObj.get("data").getAsString();
+                    //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
+                    //se eles ficarem na msg, pode causar erros
+                    String cleanFinalMessage = botMessage.replace("<s>","")
+                            .replace("</s>","")
+                            .replaceAll("\"","");
 
-                String botMessage = botObj.get("data").getAsString();
-                //tirando caracteres lixo que não são parte da mensagem antes de mandar para a prox etapa
-                String cleanFinalMessage = botMessage.replace("<s>","");
-                String cleanFinalMessage2 = cleanFinalMessage.replace("</s>","");
+                    translateMachinePostToPortugueseAndSendMsgToUser(cleanFinalMessage);
+                    Log.i("botMessage", cleanFinalMessage);
 
-                translateMachinePostToPortugueseAndSendMsgToUser(cleanFinalMessage2);
-                Log.i("botMessage", cleanFinalMessage2);
+                    conn.disconnect();
 
-                conn.disconnect();
+                }else{
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "algo deu errado", Toast.LENGTH_SHORT).show();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -238,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace("?","? ")
                         .replace(",",", ")
                         //tirando aspas, pois quebram as mensagems
-                        .replace("\"\"",", ");
+                        .replaceAll("\"","");
                 //limpando mensagens em inglês que aparecem quando ela tem apostrofos
                 if (original.contains("<i>")){
                     String startTag = "<i>";
