@@ -1,15 +1,23 @@
 package com.internaltest.sarahchatbotmvp;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.Task;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.internaltest.sarahchatbotmvp.adapters.ChatAdapter;
@@ -40,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
     ImageButton btnSend;
     FloatingActionButton info;
     ProgressDialog progressDialog;
+    Button btnToggleDark;
+    static int msgCounter = 0;
 
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         editMessage = findViewById(R.id.editMessage);
         btnSend = findViewById(R.id.btnSend);
         chatAdapter = new ChatAdapter(messageList, this);
+        btnToggleDark = findViewById(R.id.btnToggleDark);
         chatView.setAdapter(chatAdapter);
         info= findViewById(R.id.info);
         info.setOnClickListener(v -> {
@@ -58,11 +70,6 @@ public class MainActivity extends AppCompatActivity {
             ad.setMessage("APERTE O BOTÃO VOLTAR NO SEU CELULAR PARA SAIR DESSA TELA\n" +
                     "AVISO: ESSE APP AINDA ESTÁ EM FASE DE TESTES.\n " +
                     "Favor relatar quaisquer problemas para:\n teqbot.io59@gmail.com\n " +
-                    "Aviso de Privacidade\n: Esse app coleta as respostas digitadas pelos " +
-                    "usuários durante suas conversas para melhorar a precisão das respostas " +
-                    "do aplicativo, mesmo quando o app está fechado ou não está ativamente em uso " +
-                    "por você.\n Ao fechar esse aviso, você indica que consente com esses termos.\n" +
-                    "Caso não concorde, feche o aplicativo agora.\n" +
                     "AVISO: Em raras ocasiões, as frases ditas pelo app podem ter cunho ofensivo,violento," +
                     "racista, homofóbico, etc.\n Estamos trabalhando duro para criar um ambiente " +
                     "agrádavel e inclusivo para todos os nosso usuários.\n" +
@@ -71,6 +78,67 @@ public class MainActivity extends AppCompatActivity {
             ad.setPositiveButton("Sair", (dialog, which) -> dialog.dismiss());
             ad.show();
         });
+
+        //implementando lógica do botão modo escuro
+
+        // salvando estado do app usando SharedPreferences
+        SharedPreferences sharedPreferences
+                = getSharedPreferences(
+                "sharedPrefs", MODE_PRIVATE);
+        final SharedPreferences.Editor editor
+                = sharedPreferences.edit();
+        final boolean isDarkModeOn
+                = sharedPreferences
+                .getBoolean(
+                        "isDarkModeOn", true);
+
+        // ativado quando o user reabre o app dps de aplicar o modo claro/escuro
+        if (isDarkModeOn) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+            btnToggleDark.setText(
+                    "Desligar Modo Escuro");
+        }
+        else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+            btnToggleDark
+                    .setText(
+                            "Ligar Modo Escuro");
+        }
+
+        btnToggleDark.setOnClickListener(
+                view -> {
+                    // Ativado qndo o user clica no btn de ligar/desligar o modo escuro
+                    if (isDarkModeOn) {
+                        AppCompatDelegate
+                                .setDefaultNightMode(
+                                        AppCompatDelegate
+                                                .MODE_NIGHT_NO);
+                        editor.putBoolean(
+                                "isDarkModeOn", false);
+                        editor.apply();
+
+                        // Isso troca o texto do botão
+                        btnToggleDark.setText(
+                                "Ligar Modo Escuro");
+                    }
+                    else {
+                        AppCompatDelegate
+                                .setDefaultNightMode(
+                                        AppCompatDelegate
+                                                .MODE_NIGHT_YES);
+                        editor.putBoolean(
+                                "isDarkModeOn", true);
+                        editor.apply();
+                        btnToggleDark.setText(
+                                "Desligar Modo Escuro");
+                    }
+                });
 
         btnSend.setOnClickListener(view -> {
             String message = editMessage.getText().toString();
@@ -98,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 "Se sim, por favor leia os avisos apertando o símbolo no canto superior direito", true));
         chatAdapter.notifyDataSetChanged();
         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
-        messageList.add(new Message("Olá! Mande uma mensagem para mim! Eu demoro uns segundinhos para responder", true));
+        messageList.add(new Message("Olá! Mande uma mensagem para mim! Eu demoro uns 10 segundinhos para responder", true));
         chatAdapter.notifyDataSetChanged();
         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
         messageList.add(new Message("Obrigado pela paciência! Divirta-se usando a Samay!", true));
@@ -129,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
 
                 MediaType mediaType = MediaType.parse("application/json");
                 String value = "{\"texts\": [\""+messagePTBR+"\"],\"tls\": [\"en\"]}";
-                RequestBody body = RequestBody.create(mediaType, value);
+                RequestBody body = RequestBody.create(value, mediaType);
                 Request request = new Request.Builder()
                         .url("https://google-translate54.p.rapidapi.com/translates")
                         .post(body)
                         .addHeader("content-type", "application/json")
                         .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
-                        .addHeader("X-RapidAPI-Key", "INSERT_API_KEY")
+                        .addHeader("X-RapidAPI-Key", "INSERT API KEY HERE")
                         .build();
 
                 Response response = client.newCall(request).execute();
@@ -226,19 +294,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void translateMachinePostToPortugueseAndSendMsgToUser(String messageEN){
-        Thread thread = new Thread(() -> {
+        @SuppressLint("NotifyDataSetChanged") Thread thread = new Thread(() -> {
             try{
                 OkHttpClient client = new OkHttpClient();
 
                 MediaType mediaType = MediaType.parse("application/json");
                 String value = "{\"texts\": [\""+messageEN+"\"],\"tls\": [\"pt\"]}";
-                RequestBody body = RequestBody.create(mediaType, value);
+                RequestBody body = RequestBody.create(value, mediaType);
                 Request request = new Request.Builder()
                         .url("https://google-translate54.p.rapidapi.com/translates")
                         .post(body)
                         .addHeader("content-type", "application/json")
                         .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
-                        .addHeader("X-RapidAPI-Key", "INSERT_API_KEY")
+                        .addHeader("X-RapidAPI-Key", "INSERT API KEY HERE")
                         .build();
 
                 Response response = client.newCall(request).execute();
@@ -270,6 +338,10 @@ public class MainActivity extends AppCompatActivity {
                         messageList.add(new Message(cleanFinalMessage3, true));
                         chatAdapter.notifyDataSetChanged();
                         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
+                        msgCounter += 1;
+                        if (msgCounter >= 10){
+                            askRatings();
+                        }
                     });
                 }else{
                     Log.i("finalMessagePTBR s/ <i>", cleanFinalMessage);
@@ -279,6 +351,10 @@ public class MainActivity extends AppCompatActivity {
                             messageList.add(new Message(cleanFinalMessage, true));
                             chatAdapter.notifyDataSetChanged();
                             Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
+                            msgCounter += 1;
+                            if (msgCounter >= 10){
+                                askRatings();
+                            }
                         });
 
                     }else {
@@ -290,5 +366,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         thread.start();
+    }
+
+    // lógica de pedir avaliação na app store
+    private void askRatings() {
+        ReviewManager manager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // We can get the ReviewInfo object
+                ReviewInfo reviewInfo = task.getResult();
+                Task<Void> flow = manager.launchReviewFlow(this, reviewInfo);
+                flow.addOnCompleteListener(task2 -> {
+                    // The flow has finished. The API does not indicate whether the user
+                    // reviewed or not, or even whether the review dialog was shown. Thus, no
+                    // matter the result, we continue our app flow.
+                });
+            } else {
+                // There was some problem, continue regardless of the result.
+                Toast.makeText(this, "algo deu errado", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

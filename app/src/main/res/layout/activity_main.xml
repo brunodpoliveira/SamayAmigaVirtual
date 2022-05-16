@@ -12,7 +12,7 @@
         android:id="@+id/chatView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#002639"
+        android:background="@color/backgroundColor"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/editMessage"
@@ -31,8 +31,8 @@
         android:id="@+id/btnSend"
         android:layout_width="57dp"
         android:layout_height="51dp"
-        android:background="#002639"
-        android:backgroundTint="#002639"
+        android:background="@color/backgroundColor"
+        android:backgroundTint="@color/backgroundColor"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,15 +42,15 @@
         app:layout_constraintTop_toTopOf="@+id/editMessage"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_media_play"
-        app:tint="#E8DE96" />
+        app:tint="@color/appTintColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#2F4D83"
+        android:backgroundTint="@color/backgroundTintButtonColor"
         android:padding="10dp"
-        android:tint="#FFFFFF"
+        android:tint="@color/TextMsgColor"
         android:tintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,10 +66,10 @@
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:alpha="100"
-        android:backgroundTint="#2F4D83"
+        android:backgroundTint="@color/backgroundTintButtonColor"
         android:backgroundTintMode="add"
         android:padding="10dp"
-        app:backgroundTint="#2F4D83"
+        app:backgroundTint="@color/backgroundTintButtonColor"
         app:backgroundTintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,25 +77,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:rippleColor="#2F4D83" />
+        app:rippleColor="@color/backgroundTintButtonColor" />
 
     <EditText
         android:id="@+id/editMessage"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="#2F4D83"
+        android:background="@color/backgroundTintButtonColor"
         android:backgroundTintMode="add"
         android:ems="13"
         android:hint="@string/digite_mensagem_aqui"
         android:inputType="text"
         android:padding="5dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
+        android:textColor="@color/TextMsgColor"
+        android:textColorHint="@color/TextMsgColor"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnSend"
         app:layout_constraintStart_toEndOf="@+id/speak"
         app:layout_constraintTop_toTopOf="@+id/speak"
-        app:layout_constraintVertical_bias="0.965" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnToggleDark"
+        android:layout_width="163dp"
+        android:layout_height="49dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="@string/modo_escuro"
+        app:layout_constraintBottom_toTopOf="@+id/editMessage"
+        app:layout_constraintEnd_toStartOf="@+id/editMessage"
+        app:layout_constraintHorizontal_bias="0.152"
+        app:layout_constraintStart_toEndOf="@+id/speak"
+        app:layout_constraintTop_toTopOf="@+id/chatView"
+        app:layout_constraintVertical_bias="0.084" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

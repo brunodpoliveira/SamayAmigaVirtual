@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Sarahchatbotmvp.iml" filepath="$PROJECT_DIR$/.idea/modules/Sarahchatbotmvp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Sarahchatbotmvp.app.unitTest.iml" />
     </modules>
   </component>
 </project>
