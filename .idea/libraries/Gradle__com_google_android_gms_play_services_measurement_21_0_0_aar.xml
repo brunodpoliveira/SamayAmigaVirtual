@@ -2,9 +2,10 @@
   <library name="Gradle: com.google.android.gms:play-services-measurement:21.0.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0ab356c3610df79889eb19319b4e0743/transformed/play-services-measurement-21.0.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/522cc5652790c84adea931e99beba377/transformed/play-services-measurement-21.0.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/522cc5652790c84adea931e99beba377/transformed/play-services-measurement-21.0.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/522cc5652790c84adea931e99beba377/transformed/play-services-measurement-21.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/864d4f7ebd7e1febca381543212f2818/transformed/play-services-measurement-21.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/864d4f7ebd7e1febca381543212f2818/transformed/play-services-measurement-21.0.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/864d4f7ebd7e1febca381543212f2818/transformed/play-services-measurement-21.0.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-measurement/21.0.0/13889bb17d112cbd1ce0d85dc0c51aaa030cc16c/play-services-measurement-21.0.0-javadoc.jar!/" />

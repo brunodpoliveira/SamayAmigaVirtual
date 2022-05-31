@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             ad.setIcon(R.mipmap.ic_launcher_round);
             ad.setTitle("Avisos:");
             ad.setMessage("APERTE O BOTÃO VOLTAR NO SEU CELULAR PARA SAIR DESSA TELA\n" +
+                    "Veja nossa Política de Privacidade: tinyurl.com/4saxzs79\n"+
                     "AVISO: ESSE APP AINDA ESTÁ EM FASE DE TESTES.\n " +
                     "Favor relatar quaisquer problemas para:\n teqbot.io59@gmail.com\n " +
                     "AVISO: Em raras ocasiões, as frases ditas pelo app podem ter cunho ofensivo,violento," +
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         messageList.add(new Message("Olá! Mande uma mensagem para mim! Eu demoro uns 10 segundinhos para responder", true));
         chatAdapter.notifyDataSetChanged();
         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
-        messageList.add(new Message("Obrigado pela paciência! Divirta-se usando a Samay!", true));
+        messageList.add(new Message("Obrigado pela preferência! Divirta-se usando a Samay!", true));
         chatAdapter.notifyDataSetChanged();
         Objects.requireNonNull(chatView.getLayoutManager()).scrollToPosition(messageList.size() - 1);
 

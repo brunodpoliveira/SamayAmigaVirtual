@@ -6,7 +6,7 @@
     android:padding="10dp">
 
   <TextView
-      android:fontFamily="@font/montserrat_black"
+      android:fontFamily="@font/montserrat_light"
       android:id="@+id/message_send"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
       android:orientation="vertical">
 
     <TextView
-        android:fontFamily="@font/montserrat_black"
+        android:fontFamily="@font/montserrat_light"
         android:id="@+id/message_receive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
