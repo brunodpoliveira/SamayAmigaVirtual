@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "826821423049",
-    "project_id": "samay-amiga-virtual",
-    "storage_bucket": "samay-amiga-virtual.appspot.com"
+    "project_number": "817791804029",
+    "project_id": "samay-amiga-virtual-514f2",
+    "storage_bucket": "samay-amiga-virtual-514f2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:826821423049:android:30ae9e36997b153b450218",
+        "mobilesdk_app_id": "1:817791804029:android:1c0af19255c7ab3eb00714",
         "android_client_info": {
           "package_name": "com.internaltest.sarahchatbotmvp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "826821423049-pje8svo623rjlq8gip0uoei3ko9mgrpa.apps.googleusercontent.com",
+          "client_id": "817791804029-0pphlnbeh3l4i7oi9ltacvl67n26vuei.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAV18Z59TcNkQPeg-zMGGLFPdhL0_86Ln4"
+          "current_key": "AIzaSyCe0t4J-JBRZoTg-DPAjx3v0zngcOyK4MU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "826821423049-pje8svo623rjlq8gip0uoei3ko9mgrpa.apps.googleusercontent.com",
+              "client_id": "817791804029-0pphlnbeh3l4i7oi9ltacvl67n26vuei.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
