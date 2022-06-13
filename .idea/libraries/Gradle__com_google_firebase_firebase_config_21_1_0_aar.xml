@@ -2,8 +2,9 @@
   <library name="Gradle: com.google.firebase:firebase-config:21.1.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/45dfd4987865d850b2adffe955050ab2/transformed/firebase-config-21.1.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/172ef3091adaea69467c20ffb2c75bdd/transformed/firebase-config-21.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/172ef3091adaea69467c20ffb2c75bdd/transformed/firebase-config-21.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/24704a2b30d63ecbf9f0d7abbb77189e/transformed/firebase-config-21.1.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/172ef3091adaea69467c20ffb2c75bdd/transformed/firebase-config-21.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/172ef3091adaea69467c20ffb2c75bdd/transformed/firebase-config-21.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>

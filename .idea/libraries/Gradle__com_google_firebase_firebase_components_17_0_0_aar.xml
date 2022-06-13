@@ -3,8 +3,9 @@
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/6a6304beeea364608f937a7fca950453/transformed/firebase-components-17.0.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/927581057ae17ba115fc2475fb2f5a02/transformed/firebase-components-17.0.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/93efb47759307ec792cf05be20a89717/transformed/firebase-components-17.0.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/93efb47759307ec792cf05be20a89717/transformed/firebase-components-17.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/361958d788d0554f80052ec4bd42a2a6/transformed/firebase-components-17.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/93efb47759307ec792cf05be20a89717/transformed/firebase-components-17.0.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/93efb47759307ec792cf05be20a89717/transformed/firebase-components-17.0.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
