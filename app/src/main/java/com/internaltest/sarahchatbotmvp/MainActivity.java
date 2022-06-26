@@ -194,10 +194,11 @@ public class MainActivity extends AppCompatActivity {
                 modelo de resposta
                 String value = "{\"texts\": [\"hello. world!\"],\"tls\": [\"pt\"]}";
                 \""+messagePTBR+"\"
+                {"texts": ["olá!"],"tls": ["en"],"sl":"pt"}
                  */
 
                 MediaType mediaType = MediaType.parse("application/json");
-                String value = "{\"texts\": [\""+messagePTBR+"\"],\"tls\": [\"en\"]}";
+                String value = "{\"texts\": [\""+messagePTBR+"\"],\"tls\": [\"en\"],\"sl\":\"pt\"}";
                 RequestBody body = RequestBody.create(value, mediaType);
                 Request request = new Request.Builder()
                         .url("https://google-translate54.p.rapidapi.com/translates")
@@ -206,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
                         .addHeader("X-RapidAPI-Host", "google-translate54.p.rapidapi.com")
                         .addHeader("X-RapidAPI-Key", "INSERT API KEY HERE")
                         .build();
-
                 Response response = client.newCall(request).execute();
                 String original = Objects.requireNonNull(response.body()).string();
                 Log.i("original", original);
@@ -214,13 +214,16 @@ public class MainActivity extends AppCompatActivity {
                 //se eles ficarem na msg, pode causar erros
                 String cleanFinalMessage = original.replace("\"code\":200,\"texts\":","")
                         .replace(",\"tl\":\"en\"","")
+                        .replace(",\"sl\":\"pt\"","")
                         //tirando aspas, pois quebram as mensagems
-                        .replaceAll("\"","");
+                        .replaceAll("\"","")
+                        .replace("[", "").replace("]", "")
+                        .replace("{", "").replace("}", "");
                 //nessa parte abaixo ele deixa somente letras, números, sinais
                 //de pontuação passarem, tirando caracteres especiais como emojis
                 String characterFilter = "[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]";
                 String emojiless = cleanFinalMessage.replaceAll(characterFilter,"");
-                Log.i("cleanFinalMessage", emojiless);
+                Log.i("emojilessMessage", emojiless);
                 blenderbotSendPost(emojiless);
             }
             catch (Exception e) {
@@ -300,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient();
 
                 MediaType mediaType = MediaType.parse("application/json");
-                String value = "{\"texts\": [\""+messageEN+"\"],\"tls\": [\"pt\"]}";
+                String value = "{\"texts\": [\""+messageEN+"\"],\"tls\": [\"pt\"],\"sl\":\"en\"}";
                 RequestBody body = RequestBody.create(value, mediaType);
                 Request request = new Request.Builder()
                         .url("https://google-translate54.p.rapidapi.com/translates")
@@ -317,7 +320,12 @@ public class MainActivity extends AppCompatActivity {
 
                 //tirando caracteres lixo que não são parte da mensagem antes de mandar para o usuário
                 String cleanFinalMessage = original.replace("[{\"code\":200,\"texts\":\"","")
-                        .replace("\",\"tl\":\"pt\"}]","")
+                        .replace(",\"tl\":\"pt\"","")
+                        .replace(",\"sl\":\"en\"","")
+                        //tirando aspas, pois quebram as mensagems
+                        .replaceAll("\"","")
+                        .replace("[", "").replace("]", "")
+                        .replace("{", "").replace("}", "")
                         //adicionando espaçamento depois dos sinais de pontuação da resposta
                         .replace(".",". ")
                         .replace("!","! ")

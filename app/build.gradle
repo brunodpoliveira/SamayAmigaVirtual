@@ -14,8 +14,8 @@ android {
         applicationId "com.internaltest.sarahchatbotmvp"
         minSdk 23
         targetSdk 32
-        versionCode 15
-        versionName "3.6.3"
+        versionCode 16
+        versionName "3.6.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
